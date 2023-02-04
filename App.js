@@ -4,10 +4,12 @@ import { StyleSheet, Text, View, ImageBackground, Pressable,Alert } from 'react-
 import bg from './assets/bg.jpeg'
 export default function App() {
   const [map, setMap] = useState([
-    ['o', '', ''], // 1st row
-    ['', '', 'x'], // 2nd row
-    ['', '', 'x'] // 3rd row
+    ['', '', ''], // 1st row
+    ['', '', ''], // 2nd row
+    ['', '', ''] // 3rd row
   ])
+
+  const [currentTurn,setCurrentTurn] = useState('o');
 const onPress = ( rowIndex,columnIndex ) => {
 console.warn("Row", rowIndex,"Column", columnIndex );
 
@@ -19,18 +21,13 @@ if(map[rowIndex][columnIndex] !=""){
 //Expects a new object or a function be called with an existing state,
 // returns updated info
 
-// useEffect ( () => {
-//   setMap((existingMap) => { 
-//     existingMap[rowIndex][columnIndex] = "x";
-//   return existingMap;
-//   });
-// },[map]) 
-
 setMap((existingMap) => { 
   const updatedMap = [...existingMap]
-  updatedMap[rowIndex][columnIndex] = "x";
+  updatedMap[rowIndex][columnIndex] = currentTurn;
 return updatedMap;
 });
+
+setCurrentTurn(currentTurn==='x' ? 'o' : 'x' )
 
 };
   return (
