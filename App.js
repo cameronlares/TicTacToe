@@ -1,7 +1,15 @@
-import React, { useState} from 'react'
+import React, { useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
-import { StyleSheet, Text, View, ImageBackground, Pressable,Alert } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  ImageBackground,
+  Pressable,
+  Alert,
+} from 'react-native'
 import bg from './assets/bg.jpeg'
+
 export default function App() {
   const [map, setMap] = useState([
     ['', '', ''], // 1st row
@@ -9,42 +17,97 @@ export default function App() {
     ['', '', ''] // 3rd row
   ])
 
-  const [currentTurn,setCurrentTurn] = useState('o');
-const onPress = ( rowIndex,columnIndex ) => {
-console.warn("Row", rowIndex,"Column", columnIndex );
+  const [currentTurn, setCurrentTurn] = useState('x')
 
-if(map[rowIndex][columnIndex] !=""){
-  Alert.alert("Position already occupied");
-  return;
-}
+  const onPress = (rowIndex, columnIndex) => {
+    console.warn('Row', rowIndex, 'Column', columnIndex)
 
-//Expects a new object or a function be called with an existing state,
-// returns updated info
+    if (map[rowIndex][columnIndex] != '') {
+      Alert.alert('Position already occupied')
+      return
+    }
 
-setMap((existingMap) => { 
-  const updatedMap = [...existingMap]
-  updatedMap[rowIndex][columnIndex] = currentTurn;
-return updatedMap;
-});
+    //Expects a new object or a function be called with an existing state,
+    // returns updated info
 
-setCurrentTurn(currentTurn==='x' ? 'o' : 'x' )
+    setMap((existingMap) => {
+      const updatedMap = [...existingMap]
+      updatedMap[rowIndex][columnIndex] = currentTurn
+      return updatedMap
+    })
 
-};
+    setCurrentTurn(currentTurn === 'x' ? 'o' : 'x')
+    checkWinningState()
+  }
+
+  const checkWinningState = (state) => {
+    //Check Row
+
+    for (let i = 0; i < 3; i++) {
+      const isRowXWinning = map[i].every((cell) => cell === 'x')
+      const isRowOWinning = map[i].every((cell) => cell === 'o')
+//Alerts second argument supposed to be a string so use temporals
+      if (isRowXWinning) {
+        Alert.alert(`X won. Row:, ${i}`)
+      }
+
+      if (isRowOWinning) {
+        Alert.alert(`'O won. Row: ${i}`)
+      }
+    }
+
+
+    //Check Column
+    for (let col = 0; col < 3; col++) {
+      let isColumnXWinner = true
+      let isColumnOWinner = true
+      for (let row = 0; row < 3; row++) {
+        if (map[row][col] !== 'x') {
+          isColumnXWinner = false
+          console.log(isColumnXWinner)
+        }
+        if (map[row][col] !== 'o') {
+          isColumnOWinner = false
+          console.log(isColumnOWinner)
+        }
+      }
+
+      if (isColumnXWinner) {
+        Alert.alert(`X won. Col:${col}`);
+        break;
+      }
+
+      if (isColumnOWinner) {
+        Alert.alert(`O won. Col:,${col}`);
+        break;
+      }
+    }
+
+    //Check Diagonals
+  }
+
   return (
+    
     <View style={styles.container}>
       <ImageBackground source={bg} style={styles.bg} resizeMode='cover'>
         <View style={styles.map}>
-          {map.map( (row, rowIndex) => (
-            <View key={rowIndex} style={styles.row}>
+          {map.map((row, rowIndex) => (
+            <View key={`row-${rowIndex}`} style={styles.row}>
               {row.map((cell, columnIndex) => (
-                <Pressable key={columnIndex} onPress={()=> onPress(rowIndex,columnIndex)} style={styles.cell}>
+                <Pressable
+                  key={`row-${rowIndex}-col-${columnIndex}`}
+                  onPress={() => onPress(rowIndex, columnIndex)}
+                  style={styles.cell}
+                >
                   {cell == 'o' && <View style={styles.circle} />}
-                  {cell == 'x' &&
+                  {cell == 'x' && (
                     <View style={styles.cross}>
                       <View style={styles.crossLine} />
-                      <View style={[styles.crossLine, styles.crossLineReversed]} />
+                      <View
+                        style={[styles.crossLine, styles.crossLineReversed]}
+                      />
                     </View>
-                  }
+                  )}
                 </Pressable>
               ))}
             </View>
@@ -80,8 +143,6 @@ const styles = StyleSheet.create({
     paddingTop: 20
   },
   map: {
-    borderWidth: 1,
-    borderColor: 'white',
     width: '80%',
     aspectRatio: 1
   },
@@ -94,10 +155,7 @@ const styles = StyleSheet.create({
   cell: {
     width: 100,
     height: 100,
-    flex: 1,
-
-    borderColor: 'white',
-    borderWidth: 1
+    flex: 1
   },
   circle: {
     flex: 1,
@@ -105,12 +163,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     margin: 10,
-
     borderWidth: 10,
     borderColor: 'white'
   },
   cross: {
- flex:1,
+    flex: 1
   },
   crossLine: {
     // position: 'relative',
