@@ -6,7 +6,7 @@ import {
   View,
   ImageBackground,
   Pressable,
-  Alert,
+  Alert
 } from 'react-native'
 import bg from './assets/bg.jpeg'
 
@@ -21,7 +21,6 @@ export default function App() {
 
   const onPress = (rowIndex, columnIndex) => {
     console.warn('Row', rowIndex, 'Column', columnIndex)
-
     if (map[rowIndex][columnIndex] != '') {
       Alert.alert('Position already occupied')
       return
@@ -30,7 +29,7 @@ export default function App() {
     //Expects a new object or a function be called with an existing state,
     // returns updated info
 
-    setMap((existingMap) => {
+      setMap((existingMap) => {
       const updatedMap = [...existingMap]
       updatedMap[rowIndex][columnIndex] = currentTurn
       return updatedMap
@@ -46,7 +45,7 @@ export default function App() {
     for (let i = 0; i < 3; i++) {
       const isRowXWinning = map[i].every((cell) => cell === 'x')
       const isRowOWinning = map[i].every((cell) => cell === 'o')
-//Alerts second argument supposed to be a string so use temporals
+      //Alerts second argument supposed to be a string so use temporals
       if (isRowXWinning) {
         Alert.alert(`X won. Row:, ${i}`)
       }
@@ -55,7 +54,6 @@ export default function App() {
         Alert.alert(`'O won. Row: ${i}`)
       }
     }
-
 
     //Check Column
     for (let col = 0; col < 3; col++) {
@@ -73,21 +71,44 @@ export default function App() {
       }
 
       if (isColumnXWinner) {
-        Alert.alert(`X won. Col:${col}`);
-        break;
+        Alert.alert(`X won. Col:${col}`)
+        break
       }
 
       if (isColumnOWinner) {
-        Alert.alert(`O won. Col:,${col}`);
-        break;
+        Alert.alert(`O won. Col:,${col}`)
+        break
       }
     }
 
     //Check Diagonals
+
+    let isDiagonal1OWinning = true
+    let isDiagonal1XWinning = true
+
+    let isDiagonal2OWinning = true
+    let isDiagonal2XWinning = true
+
+    for (let i = 0; i < 3; i++) {
+      if (map[i][i] != 'o') {
+        isDiagonal1OWinning = false
+      }
+
+      if (map[i][i] != 'x') {
+        isDiagonal1XWinning = false
+      }
+
+      if (map[i][i] != 'o') {
+        isDiagonal1OWinning = false
+      }
+
+      if (map[i][i] != 'x') {
+        isDiagonal1XWinning = false
+      }
+    }
   }
 
   return (
-    
     <View style={styles.container}>
       <ImageBackground source={bg} style={styles.bg} resizeMode='cover'>
         <View style={styles.map}>
